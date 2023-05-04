@@ -1,4 +1,4 @@
-package internal
+package inter
 
 import (
 	"encoding/json"
@@ -6,9 +6,9 @@ import (
 )
 
 type Responser interface {
-	RetSuccess(detail string, data proto.Message) Result
-	RetError(err error) Result
-	RetFail(code int32, detail string) Result
+	RetSuccess(detail string, data proto.Message) interface{}
+	RetError(err error) interface{}
+	RetFail(code int32, detail string) interface{}
 }
 
 var responseHandler Responser = &DefaultResp{}
@@ -18,15 +18,19 @@ func GetRespHandler() Responser {
 }
 
 type Result struct {
-	Code   int32         `json:"code,omitempty" `
-	Detail string        `json:"detail,omitempty"`
+	Code   int32         `json:"code" `
+	Detail string        `json:"detail"`
 	Data   proto.Message `json:"data"`
+}
+
+type Any struct {
+	Result
 }
 
 type DefaultResp struct{}
 
 // RetSuccess return success
-func (dt *DefaultResp) RetSuccess(detail string, data proto.Message) Result {
+func (dt *DefaultResp) RetSuccess(detail string, data proto.Message) interface{} {
 	return Result{
 		Code:   0,
 		Detail: detail,
@@ -35,7 +39,7 @@ func (dt *DefaultResp) RetSuccess(detail string, data proto.Message) Result {
 }
 
 // RetError error 返回错误
-func (dt *DefaultResp) RetError(err error) Result {
+func (dt *DefaultResp) RetError(err error) interface{} {
 	r := Result{}
 	msg := err.Error()
 	_ = json.Unmarshal([]byte(msg), &r)
@@ -43,7 +47,7 @@ func (dt *DefaultResp) RetError(err error) Result {
 }
 
 // RetFail 返回错误结构
-func (dt *DefaultResp) RetFail(code int32, detail string) Result {
+func (dt *DefaultResp) RetFail(code int32, detail string) interface{} {
 	return Result{
 		Code:   code,
 		Detail: detail,

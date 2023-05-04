@@ -1,38 +1,37 @@
 package gutil
 
 import (
-	"encoding/json"
+	"github.com/GodWY/gutil/inter"
 	"github.com/gogo/protobuf/proto"
 )
 
-type Result struct {
-	Code   int32         `json:"code"`
-	Detail string        `json:"detail"`
-	Data   proto.Message `json:"data"`
-}
-
 // RetSuccess return success
-func RetSuccess(detail string, data proto.Message) Result {
-	return Result{
-		Code:   0,
-		Detail: detail,
-		Data:   data,
+func RetSuccess(detail string, data proto.Message) interface{} {
+	if responseHandler == nil {
+		return inter.GetRespHandler().RetSuccess(detail, data)
 	}
+	return responseHandler.RetSuccess(detail, data)
 }
 
 // RetError error 返回错误
-func RetError(err error) Result {
-	r := Result{}
-	msg := err.Error()
-	_ = json.Unmarshal([]byte(msg), &r)
-	return r
+func RetError(err error) interface{} {
+	if responseHandler == nil {
+		return inter.GetRespHandler().RetError(err)
+	}
+	return responseHandler.RetError(err)
 }
 
 // RetFail 返回错误结构
-func RetFail(code int32, detail string) Result {
-	return Result{
-		Code:   code,
-		Detail: detail,
-		Data:   nil,
+func RetFail(code int32, detail string) interface{} {
+	if responseHandler == nil {
+		return inter.GetRespHandler().RetFail(code, detail)
 	}
+	return responseHandler.RetFail(code, detail)
+}
+
+var responseHandler = inter.GetRespHandler()
+
+// RegisterHttpResponse 注册错误处理使用
+func RegisterHttpResponse(h inter.Responser) {
+	responseHandler = h
 }
