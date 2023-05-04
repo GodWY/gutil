@@ -3,6 +3,7 @@ package gutil
 import (
 	"github.com/GodWY/gutil/inter"
 	"github.com/gogo/protobuf/proto"
+	"sync"
 )
 
 // RetSuccess return success
@@ -30,8 +31,11 @@ func RetFail(code int32, detail string) interface{} {
 }
 
 var responseHandler = inter.GetRespHandler()
+var mu sync.Mutex
 
 // RegisterHttpResponse 注册错误处理使用
 func RegisterHttpResponse(h inter.Responser) {
+	mu.Lock()
+	defer mu.Lock()
 	responseHandler = h
 }
