@@ -2,7 +2,7 @@ package gutil
 
 import (
 	"github.com/GodWY/gutil/inter"
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	"sync"
 )
 

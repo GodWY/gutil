@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/stretchr/testify v1.8.0
+	google.golang.org/protobuf v1.30.0
 )
 
 require (

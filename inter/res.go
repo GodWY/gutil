@@ -2,7 +2,7 @@ package inter
 
 import (
 	"encoding/json"
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 type Responser interface {
