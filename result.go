@@ -1,6 +1,7 @@
 package gutil
 
 import (
+	"context"
 	"github.com/GodWY/gutil/inter"
 	"google.golang.org/protobuf/proto"
 	"sync"
@@ -23,7 +24,13 @@ func RetError(err error) interface{} {
 }
 
 // RetFail 返回错误结构
-func RetFail(code int32, detail string) interface{} {
+func RetFail(code int32, detail string, logMsg ...string) interface{} {
+	if len(logMsg) != 0 {
+		if logHandler != nil {
+			//log.Log.Error(fmt.Sprintf("bind request is error: %s", msg))
+			logHandler(context.Background(), logMsg)
+		}
+	}
 	if responseHandler == nil {
 		return inter.GetRespHandler().RetFail(code, detail)
 	}
